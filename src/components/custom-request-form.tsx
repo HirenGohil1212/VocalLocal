@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { handleCustomRequest } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -36,7 +36,7 @@ function SubmitButton() {
 
 export function CustomRequestForm() {
   const initialState = { message: '', data: null, error: false };
-  const [state, formAction] = useFormState(handleCustomRequest, initialState);
+  const [state, formAction] = useActionState(handleCustomRequest, initialState);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
