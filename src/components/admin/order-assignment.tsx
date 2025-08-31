@@ -33,9 +33,9 @@ type Order = (typeof adminOrders)[0];
 export function OrderAssignment() {
   const [orders, setOrders] = useState(adminOrders);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleAssign = (orderId: string) => {
-    const { toast } = useToast();
     if (!selectedPartner) {
         toast({
             variant: "destructive",
