@@ -164,7 +164,7 @@ export function OrderConfirmation() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="pending">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="pending">Pending ({pendingOrders.length})</TabsTrigger>
             <TabsTrigger value="confirmed">Confirmed ({confirmedOrders.length})</TabsTrigger>
             <TabsTrigger value="ready">Ready ({readyOrders.length})</TabsTrigger>
@@ -179,21 +179,21 @@ export function OrderConfirmation() {
           </TabsContent>
           <TabsContent value="confirmed" className="space-y-4 pt-4">
             {confirmedOrders.length > 0 ? (
-              confirmedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
+              confirmedOrders.map((order) => <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No confirmed orders.</p>
             )}
           </TabsContent>
           <TabsContent value="ready" className="space-y-4 pt-4">
             {readyOrders.length > 0 ? (
-              readyOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
+              readyOrders.map((order) => <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No orders are ready for pickup.</p>
             )}
           </TabsContent>
           <TabsContent value="completed" className="space-y-4 pt-4">
             {completedOrders.length > 0 ? (
-              completedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
+              completedOrders.map((order) => <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No completed orders.</p>
             )}
