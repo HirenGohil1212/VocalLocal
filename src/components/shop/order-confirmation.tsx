@@ -33,7 +33,7 @@ const statusStyles: Record<OrderStatus, string> = {
     'Handed Over': 'border-gray-500/80 bg-gray-500/10 text-gray-600 dark:text-gray-400 dark:border-gray-400/50',
 };
 
-function OrderCard({ order, onStatusChange }: { order: Order, onStatusChange: (id: string, status: OrderStatus) => void }) {
+function OrderCard({ order, onStatusChange, onHandover }: { order: Order, onStatusChange: (id: string, status: OrderStatus) => void, onHandover: (orderId: string, partnerId: string) => void }) {
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -56,9 +56,7 @@ function OrderCard({ order, onStatusChange }: { order: Order, onStatusChange: (i
         toast({ variant: 'destructive', title: 'Selection Missing', description: 'Please select a delivery partner.' });
         return;
     }
-    onStatusChange(order.orderId, 'Handed Over');
-    const partnerName = deliveryPartners.find(p => p.id === selectedPartner)?.name;
-    toast({ title: 'Order Handed Over', description: `Order ${order.orderId} has been handed over to ${partnerName}.` });
+    onHandover(order.orderId, selectedPartner);
   };
 
   return (
@@ -123,7 +121,7 @@ function OrderCard({ order, onStatusChange }: { order: Order, onStatusChange: (i
             </div>
         )}
         {order.status === 'Handed Over' && (
-            <p className='text-sm text-center text-muted-foreground'>This order has been handed over for delivery.</p>
+             <p className='text-sm text-center text-muted-foreground'>This order was handed over to {order.assignedPartner}.</p>
         )}
       </CardContent>
     </Card>
@@ -131,10 +129,23 @@ function OrderCard({ order, onStatusChange }: { order: Order, onStatusChange: (i
 }
 
 export function OrderConfirmation() {
+  const { toast } = useToast();
   const [orders, setOrders] = useState(initialShopOrders);
 
   const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
     setOrders(orders.map(o => o.orderId === orderId ? {...o, status: newStatus } : o));
+  };
+
+  const handleHandover = (orderId: string, partnerId: string) => {
+    const partner = deliveryPartners.find(p => p.id === partnerId);
+    if (!partner) return;
+
+    setOrders(orders.map(o => o.orderId === orderId ? { ...o, status: 'Handed Over', assignedPartner: partner.name } : o));
+
+    toast({ 
+      title: 'Order Handed Over', 
+      description: `Order ${orderId} has been handed over to ${partner.name}.` 
+    });
   };
 
   const pendingOrders = orders.filter((o) => o.status === 'Pending');
@@ -153,7 +164,7 @@ export function OrderConfirmation() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="pending">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="pending">Pending ({pendingOrders.length})</TabsTrigger>
             <TabsTrigger value="confirmed">Confirmed ({confirmedOrders.length})</TabsTrigger>
             <TabsTrigger value="ready">Ready ({readyOrders.length})</TabsTrigger>
@@ -161,28 +172,28 @@ export function OrderConfirmation() {
           </TabsList>
           <TabsContent value="pending" className="space-y-4 pt-4">
             {pendingOrders.length > 0 ? (
-              pendingOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} />)
+              pendingOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No pending orders.</p>
             )}
           </TabsContent>
           <TabsContent value="confirmed" className="space-y-4 pt-4">
             {confirmedOrders.length > 0 ? (
-              confirmedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} />)
+              confirmedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No confirmed orders.</p>
             )}
           </TabsContent>
           <TabsContent value="ready" className="space-y-4 pt-4">
             {readyOrders.length > 0 ? (
-              readyOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} />)
+              readyOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No orders are ready for pickup.</p>
             )}
           </TabsContent>
           <TabsContent value="completed" className="space-y-4 pt-4">
             {completedOrders.length > 0 ? (
-              completedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} />)
+              completedOrders.map((order) => <OrderCard key={order.orderId} order={order} onStatusChange={handleStatusChange} onHandover={handleHandover} />)
             ) : (
               <p className="text-center text-muted-foreground py-8">No completed orders.</p>
             )}

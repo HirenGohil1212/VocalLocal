@@ -117,7 +117,7 @@ export function OrderManagement() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="pending">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3">
             <TabsTrigger value="pending">Pending ({pendingOrders.length})</TabsTrigger>
             <TabsTrigger value="active">Active ({activeOrders.length})</TabsTrigger>
             <TabsTrigger value="completed">Completed ({completedOrders.length})</TabsTrigger>
