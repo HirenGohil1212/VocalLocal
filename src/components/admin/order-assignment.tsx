@@ -31,9 +31,9 @@ import { useToast } from '@/hooks/use-toast';
 type Order = (typeof adminOrders)[0];
 
 export function OrderAssignment() {
+  const { toast } = useToast();
   const [orders, setOrders] = useState(adminOrders);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
-  const { toast } = useToast();
 
   const handleAssign = (orderId: string) => {
     if (!selectedPartner) {
@@ -60,9 +60,8 @@ export function OrderAssignment() {
         title: "Success",
         description: `Order ${orderId} assigned to ${partnerName}.`,
     });
-    setSelectedPartner(null);
-    // Close popover after assignment would be ideal, but requires more state management.
-    // For this prototype, this is sufficient.
+    // This is a workaround to close the popover. A better solution would involve a controlled popover.
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
   };
 
   return (
@@ -118,7 +117,7 @@ export function OrderAssignment() {
                               Select a partner for {order.orderId}.
                             </p>
                           </div>
-                          <Select onValueChange={setSelectedPartner}>
+                          <Select onValueChange={setSelectedPartner} value={selectedPartner ?? undefined}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select a partner" />
                             </SelectTrigger>
