@@ -23,16 +23,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { adminOrders, deliveryPartners } from '@/lib/data';
+import { adminOrders as initialAdminOrders, deliveryPartners } from '@/lib/data';
 import { Badge } from '../ui/badge';
 import { UserCheck, Truck, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-type Order = (typeof adminOrders)[0];
+type Order = (typeof initialAdminOrders)[0];
 
 export function OrderAssignment() {
   const { toast } = useToast();
-  const [orders, setOrders] = useState(adminOrders);
+  const [orders, setOrders] = useState(initialAdminOrders);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
 
   const handleAssign = (orderId: string) => {
@@ -60,7 +60,6 @@ export function OrderAssignment() {
         title: "Success",
         description: `Order ${orderId} assigned to ${partnerName}.`,
     });
-    // This is a workaround to close the popover. A better solution would involve a controlled popover.
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
   };
 
@@ -70,7 +69,7 @@ export function OrderAssignment() {
         <CardTitle>Order Assignment</CardTitle>
         <CardDescription>Manually assign delivery partners to pending orders.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
