@@ -15,11 +15,11 @@ export default function DeliveryPage() {
           </div>
         </div>
         <Separator />
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-8">
+            <div className="md:col-span-2">
                 <OrderManagement />
             </div>
-            <div className="lg:col-span-1">
+            <div className="md:col-span-1">
                 <EarningsDashboard />
             </div>
         </div>
